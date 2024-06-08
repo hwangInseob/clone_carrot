@@ -1,5 +1,5 @@
 import 'package:clone_carrot/routes.dart';
-import 'package:clone_carrot/screen/home_page.dart';
+import 'package:clone_carrot/screen/home/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +13,14 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: HomePage.routeName,
+      theme: ThemeData(
+        primaryColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Colors.white,
+        ),
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      initialRoute: MainPage.routeName,
       getPages: routes,
     );
   }

@@ -1,9 +1,9 @@
-import 'package:clone_carrot/screen/home_page.dart';
+import 'package:clone_carrot/screen/home/main_page.dart';
 import 'package:get/get.dart';
 
 final routes = <GetPage>[
   GetPage(
-    name: HomePage.routeName,
-    page: () => const HomePage(),
+    name: MainPage.routeName,
+    page: () => MainPage(),
   ),
 ];
