@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:clone_carrot/model/board_item.dart';
 import 'package:clone_carrot/screen/home/home_page.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class MainPage extends GetView<MainPageController> {
   // TODO: implement controller
   MainPageController get controller => Get.put(MainPageController());
 
-  PreferredSizeWidget _getAppBar() {
+  PreferredSizeWidget _getAppBar(BuildContext context) {
     return AppBar(
       scrolledUnderElevation: 0,
       title: GestureDetector(
@@ -21,14 +23,33 @@ class MainPage extends GetView<MainPageController> {
         onTap: () {
           debugPrint('click');
         },
-        child: Row(
-          children: [
-            Text('태전동'),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: 30,
-            ),
+        child: PopupMenuButton<_DongMenuItem>(
+          offset: Offset(10, 20),
+          color: Colors.white,
+          splashRadius: 0,
+          shape: ShapeBorder.lerp(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              3),
+          onSelected: (value) => controller.currentDong!.value = value,
+          itemBuilder: (context) => [
+            for (var i in controller.dongMenuItems)
+              PopupMenuItem<_DongMenuItem>(
+                value: i,
+                child: Text(i.name),
+              ),
           ],
+          child: Row(
+            children: [
+              Obx(
+                () => Text(controller.currentDong!.value!.name),
+              ),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 30,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -102,7 +123,7 @@ class MainPage extends GetView<MainPageController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _getAppBar(),
+        appBar: _getAppBar(context),
         body: Obx(
           () => _getBodyWidget(
               context, controller.bottomNavigationBarIndex.value),
@@ -121,10 +142,42 @@ class MainPageController extends GetxController {
     _BottomNaviBarItem(label: '채팅', svgPath: 'chat_'),
     _BottomNaviBarItem(label: '나의 당근', svgPath: 'user_'),
   ].obs;
-
   GlobalKey bottomBarKey = GlobalKey(debugLabel: 'btm_navi_bar');
-
   RxInt bottomNavigationBarIndex = 0.obs;
+  RxList<_DongMenuItem> dongMenuItems = <_DongMenuItem>[
+    _DongMenuItem(name: '태전동', value: 0),
+    _DongMenuItem(name: '구암동', value: 1),
+    _DongMenuItem(name: '복현동', value: 2),
+  ].obs;
+  Rx<_DongMenuItem?>? currentDong;
+
+  _DongMenuItem testDong1 = _DongMenuItem(name: '테스트', value: 1);
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    currentDong = dongMenuItems.first.obs;
+
+    super.onInit();
+  }
+}
+
+class _DongMenuItem {
+  String name;
+  int value;
+
+  factory _DongMenuItem.fromJson(Map<String, dynamic> json) {
+    return _DongMenuItem(name: json['name'], value: json['value']);
+  }
+
+  _DongMenuItem({
+    required this.name,
+    required this.value,
+  });
+
+  // factory _DongMenuItem.clone() {
+  //   return _DongMenuItem.fromJson(jsonDecode(jsonEncode(this)));
+  // }
 }
 
 class _BottomNaviBarItem {
