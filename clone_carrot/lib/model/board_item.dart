@@ -1,4 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'board_item.g.dart';
+
+@JsonSerializable()
 class BoardItem {
+  String cid;
+  String image;
+  String location;
+  String price;
+  String likes;
+  String title;
+
   BoardItem({
     required this.cid,
     required this.image,
@@ -8,21 +20,8 @@ class BoardItem {
     required this.title,
   });
 
-  factory BoardItem.fromJson(Map<String, dynamic> json) {
-    return BoardItem(
-      cid: json["cid"],
-      image: json["image"],
-      location: json["location"],
-      price: json["price"],
-      likes: json["likes"],
-      title: json["title"],
-    );
-  }
+  factory BoardItem.fromJson(Map<String, dynamic> json) =>
+      _$BoardItemFromJson(json);
 
-  String cid;
-  String image;
-  String location;
-  String price;
-  String likes;
-  String title;
+  Map<String, dynamic> toJson() => _$BoardItemToJson(this);
 }
