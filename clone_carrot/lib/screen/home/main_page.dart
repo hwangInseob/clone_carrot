@@ -23,7 +23,7 @@ class MainPage extends GetView<MainPageController> {
         onTap: () {
           debugPrint('click');
         },
-        child: PopupMenuButton<_DongMenuItem>(
+        child: PopupMenuButton<DongMenuItem>(
           offset: Offset(10, 20),
           color: Colors.white,
           splashRadius: 0,
@@ -31,10 +31,12 @@ class MainPage extends GetView<MainPageController> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               3),
-          onSelected: (value) => controller.currentDong!.value = value,
+          onSelected: (value) {
+            controller.currentDong!.value = value;
+          },
           itemBuilder: (context) => [
             for (var i in controller.dongMenuItems)
-              PopupMenuItem<_DongMenuItem>(
+              PopupMenuItem<DongMenuItem>(
                 value: i,
                 child: Text(i.name),
               ),
@@ -144,33 +146,30 @@ class MainPageController extends GetxController {
   ].obs;
   GlobalKey bottomBarKey = GlobalKey(debugLabel: 'btm_navi_bar');
   RxInt bottomNavigationBarIndex = 0.obs;
-  RxList<_DongMenuItem> dongMenuItems = <_DongMenuItem>[
-    _DongMenuItem(name: '태전동', value: 0),
-    _DongMenuItem(name: '구암동', value: 1),
-    _DongMenuItem(name: '복현동', value: 2),
+  RxList<DongMenuItem> dongMenuItems = <DongMenuItem>[
+    DongMenuItem(name: '태전동', value: 0),
+    DongMenuItem(name: '구암동', value: 1),
+    DongMenuItem(name: '복현동', value: 2),
   ].obs;
-  Rx<_DongMenuItem?>? currentDong;
-
-  _DongMenuItem testDong1 = _DongMenuItem(name: '테스트', value: 1);
+  Rx<DongMenuItem?>? currentDong;
 
   @override
   void onInit() {
     // TODO: implement onInit
     currentDong = dongMenuItems.first.obs;
-
     super.onInit();
   }
 }
 
-class _DongMenuItem {
+class DongMenuItem {
   String name;
   int value;
 
-  factory _DongMenuItem.fromJson(Map<String, dynamic> json) {
-    return _DongMenuItem(name: json['name'], value: json['value']);
+  factory DongMenuItem.fromJson(Map<String, dynamic> json) {
+    return DongMenuItem(name: json['name'], value: json['value']);
   }
 
-  _DongMenuItem({
+  DongMenuItem({
     required this.name,
     required this.value,
   });
