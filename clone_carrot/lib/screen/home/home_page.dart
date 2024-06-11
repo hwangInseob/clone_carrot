@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:clone_carrot/model/board_item.dart';
 import 'package:clone_carrot/repository/contents_repo.dart';
 import 'package:clone_carrot/screen/detail_page.dart';
 import 'package:clone_carrot/screen/home/main_page.dart';
+import 'package:clone_carrot/util/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends GetView<HomePageController> {
   const HomePage({super.key});
@@ -15,14 +13,6 @@ class HomePage extends GetView<HomePageController> {
   @override
   // TODO: implement controller
   HomePageController get controller => Get.put(HomePageController());
-
-  formatPrice(String price) {
-    try {
-      return NumberFormat('###,###,###,##0').format(int.parse(price));
-    } on Exception catch (e) {
-      return price;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +38,12 @@ class HomePage extends GetView<HomePageController> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image(
-                      image: AssetImage(controller.boardItems[index].image),
-                      width: 100,
+                    child: Hero(
+                      tag: controller.boardItems[index].cid,
+                      child: Image(
+                        image: AssetImage(controller.boardItems[index].image),
+                        width: 100,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -76,7 +69,7 @@ class HomePage extends GetView<HomePageController> {
                             height: 3,
                           ),
                           Text(
-                            formatPrice(controller.boardItems[index].price),
+                            controller.boardItems[index].price.formatPrice(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,

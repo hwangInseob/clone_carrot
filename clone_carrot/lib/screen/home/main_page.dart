@@ -1,11 +1,7 @@
-import 'dart:convert';
-
-import 'package:clone_carrot/model/board_item.dart';
 import 'package:clone_carrot/screen/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class MainPage extends GetView<MainPageController> {
   static const routeName = "/home";
@@ -78,7 +74,6 @@ class MainPage extends GetView<MainPageController> {
     switch (index) {
       case 0:
         return HomePage();
-        break;
       default:
         return Center(
           child: Text('Try Later'),
