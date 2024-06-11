@@ -6,9 +6,11 @@ final routes = <GetPage>[
   GetPage(
     name: MainPage.routeName,
     page: () => MainPage(),
+    transition: Transition.noTransition,
   ),
   GetPage(
     name: DetailPage.routeName,
     page: () => DetailPage(),
+    transition: Transition.fadeIn,
   ),
 ];
