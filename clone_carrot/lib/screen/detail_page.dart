@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:clone_carrot/component/manner_temperature.dart';
 import 'package:clone_carrot/model/board_item.dart';
 import 'package:clone_carrot/screen/home/home_page.dart';
+import 'package:clone_carrot/service/my_dio.dart';
 import 'package:clone_carrot/util/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class DetailPage extends GetView<DetailPageController> {
@@ -16,7 +19,7 @@ class DetailPage extends GetView<DetailPageController> {
 
   _onClickShare() {
     debugPrint("##################################");
-    debugPrint("IMPLEMENTS SHARE !!!");
+    MyDio().test();
     debugPrint("##################################");
   }
 
@@ -44,7 +47,7 @@ class DetailPage extends GetView<DetailPageController> {
     );
   }
 
-  _getBody(context) {
+  _getSlideImageWidget(BuildContext context) {
     return Container(
       width: double.infinity,
       child: Stack(
@@ -101,6 +104,83 @@ class DetailPage extends GetView<DetailPageController> {
           ),
         ],
       ),
+    );
+  }
+
+  //작성자 프로필
+  _getSellerInfo() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        width: double.infinity,
+        height: 50,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(50),
+            //   child: Image.asset(
+            //     "assets/images/user.png",
+            //     width: 50,
+            //   ),
+            // )
+            /*
+            * 아래가 더 간결함*/
+            // 프로필
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: AssetImage('assets/images/user.png'),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            // 닉네임, 주소
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "HardFlutter",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text('북구 구암동'),
+              ],
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MannerTemperature(
+                    mannerTemp: 36.5,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _getDivideLine() {
+    return Container(
+      width: double.infinity,
+      color: Colors.black26,
+      height: .6,
+      margin: EdgeInsets.symmetric(vertical: 10),
+    );
+  }
+
+  _getBody(context) {
+    return Column(
+      children: [
+        _getSlideImageWidget(context),
+        _getSellerInfo(),
+        _getDivideLine(),
+      ],
     );
   }
 
@@ -222,5 +302,4 @@ class DetailPageController extends GetxController {
     item = homePageController.detailItem!.obs;
     super.onInit();
   }
-
 }
