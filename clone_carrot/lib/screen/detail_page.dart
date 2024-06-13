@@ -17,6 +17,10 @@ class DetailPage extends GetView<DetailPageController> {
   // TODO: implement controller
   DetailPageController get controller => Get.put(DetailPageController());
 
+  _getTextStyle1() {
+    return TextStyle(fontSize: 12, color: Colors.black38);
+  }
+
   _onClickShare() {
     debugPrint("##################################");
     MyDio().test();
@@ -31,6 +35,9 @@ class DetailPage extends GetView<DetailPageController> {
 
   _getAppBar() {
     return AppBar(
+      iconTheme: IconThemeData(
+        color: Colors.white,
+      ),
       backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
@@ -154,7 +161,7 @@ class DetailPage extends GetView<DetailPageController> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   MannerTemperature(
-                    mannerTemp: 36.5,
+                    mannerTemp: 43.7,
                   ),
                 ],
               ),
@@ -174,12 +181,113 @@ class DetailPage extends GetView<DetailPageController> {
     );
   }
 
+  _getContentsDetail() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            controller.item.value.title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          ),
+          Text(
+            '디지털/가전 · 23시간 전',
+            style: _getTextStyle1(),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text('선물받은 새상품이고\n상품 꺼내보기만 했습니다.\n거래는 직거래만 합니다.'),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Text('채팅', style: _getTextStyle1()),
+                  Text('3', style: _getTextStyle1()),
+                  Text(' · ', style: _getTextStyle1()),
+                  Text('관심', style: _getTextStyle1()),
+                  Text('17', style: _getTextStyle1()),
+                  Text(' · ', style: _getTextStyle1()),
+                  Text('조회', style: _getTextStyle1()),
+                  Text('138', style: _getTextStyle1()),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  _getOtherSellGrid() {
+    return SliverPadding(
+      padding: EdgeInsets.all(10),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 1),
+        delegate: SliverChildBuilderDelegate(
+          childCount: 15,
+          (context, index) => Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        controller.item.value.image,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  controller.item.value.title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  controller.item.value.price.formatPrice() + '원',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   _getBody(context) {
-    return Column(
-      children: [
-        _getSlideImageWidget(context),
-        _getSellerInfo(),
-        _getDivideLine(),
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              _getSlideImageWidget(context),
+              _getSellerInfo(),
+              _getDivideLine(),
+              _getContentsDetail(),
+              _getDivideLine(),
+              _getOtherSellContents(),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -272,6 +380,41 @@ class DetailPage extends GetView<DetailPageController> {
           ),
         ],
       ),
+    );
+  }
+
+  _getOtherSellContents() {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '판매자의 다른 상품',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                  Text(
+                    '모두보기',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: Colors.black54),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
