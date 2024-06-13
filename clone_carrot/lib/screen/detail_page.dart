@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clone_carrot/component/manner_temperature.dart';
 import 'package:clone_carrot/model/board_item.dart';
@@ -7,6 +9,7 @@ import 'package:clone_carrot/util/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 
 class DetailPage extends GetView<DetailPageController> {
   static const routeName = "/detail";
@@ -33,22 +36,35 @@ class DetailPage extends GetView<DetailPageController> {
     debugPrint("##################################");
   }
 
+  _getAnimateIcon(icon) {
+    return AnimatedBuilder(
+      animation: controller.animation,
+      builder: (context, child) => Icon(
+        icon,
+        color: controller.animation.value,
+      ),
+    );
+  }
+
   _getAppBar() {
     return AppBar(
-      iconTheme: IconThemeData(
-        color: Colors.white,
+      leading: IconButton(
+        onPressed: () {
+          Get.back();
+        },
+        icon: _getAnimateIcon(Icons.arrow_back_rounded),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white.withAlpha(controller.headerAlpha.value),
       elevation: 0,
       scrolledUnderElevation: 0,
       actions: [
         IconButton(
           onPressed: _onClickShare,
-          icon: Icon(Icons.share_rounded),
+          icon: _getAnimateIcon(Icons.share_rounded),
         ),
         IconButton(
           onPressed: _onClickMore,
-          icon: Icon(Icons.more_vert_sharp),
+          icon: _getAnimateIcon(Icons.more_vert_sharp),
         ),
       ],
     );
@@ -275,6 +291,7 @@ class DetailPage extends GetView<DetailPageController> {
 
   _getBody(context) {
     return CustomScrollView(
+      controller: controller.scrollController,
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate(
@@ -288,6 +305,7 @@ class DetailPage extends GetView<DetailPageController> {
             ],
           ),
         ),
+        _getOtherSellGrid(),
       ],
     );
   }
@@ -333,10 +351,10 @@ class DetailPage extends GetView<DetailPageController> {
                       ),
                     ),
                     Text(
-                      'Make Offer',
+                      '가격제안불가',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.orange,
+                        color: Colors.grey,
                       ),
                     ),
                   ],
@@ -368,7 +386,7 @@ class DetailPage extends GetView<DetailPageController> {
               ),
               child: Center(
                 child: Text(
-                  'Sign up to chat',
+                  '채팅으로 거래하기',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -421,28 +439,49 @@ class DetailPage extends GetView<DetailPageController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        //앱바 뒷부분까지 사용한다는 옵션
-        extendBodyBehindAppBar: true,
-        appBar: _getAppBar(),
-        body: _getBody(context),
-        bottomNavigationBar: _getBottomBar(),
+      child: Obx(
+        () => Scaffold(
+          //앱바 뒷부분까지 사용한다는 옵션
+          extendBodyBehindAppBar: true,
+          appBar: _getAppBar(),
+          body: _getBody(context),
+          bottomNavigationBar: _getBottomBar(),
+        ),
       ),
     );
   }
 }
 
-class DetailPageController extends GetxController {
+class DetailPageController extends FullLifeCycleController
+    with GetSingleTickerProviderStateMixin {
   late Rx<BoardItem> item;
   HomePageController homePageController = Get.find<HomePageController>();
   RxInt currentImageIndex = 0.obs;
   CarouselController carouselController = CarouselController();
   int imageCount = 5; // 임시
 
+  ScrollController scrollController = ScrollController();
+
+  late AnimationController animationController;
+  late Animation animation;
+
+  RxInt headerAlpha = 0.obs;
+
   @override
   void onInit() {
     // TODO : Get BoardItem from route parameter
     item = homePageController.detailItem!.obs;
+    animationController = AnimationController(vsync: this);
+    animation = ColorTween(begin: Colors.white, end: Colors.black)
+        .animate(animationController);
+    scrollController.addListener(onScrollEvent);
     super.onInit();
+  }
+
+  onScrollEvent() {
+    headerAlpha.value =
+        scrollController.offset >= 255 ? 255 : scrollController.offset.round();
+
+    animationController.value = headerAlpha.value / 255;
   }
 }
